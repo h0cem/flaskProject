@@ -1,0 +1,384 @@
+{
+    "nodes": [
+        {
+            "type": "person",
+            "vulnerability": 0.8144623368957018,
+            "risk": 0,
+            "id": 0,
+            "status": "I",
+            "p_infection": 0.354898674669767
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.32689055487616825,
+            "risk": 0,
+            "id": 1,
+            "status": "S",
+            "p_infection": 0.07623886394320459
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.7204775315249925,
+            "risk": 0,
+            "id": 2,
+            "status": "S",
+            "p_infection": 0.057643952710234
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.40367546773766694,
+            "risk": 0,
+            "id": 3,
+            "status": "S",
+            "p_infection": 0.19678998856573118
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.13098945347335325,
+            "risk": 0,
+            "id": 4,
+            "status": "S",
+            "p_infection": 0.2734470107103567
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.5454978470079292,
+            "risk": 0,
+            "id": 5,
+            "status": "S",
+            "p_infection": 0.06321904368633137
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.4403298602520117,
+            "risk": 0,
+            "id": 6,
+            "status": "I",
+            "p_infection": 0.7180060777788464
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.6374711713616322,
+            "risk": 0,
+            "id": 7,
+            "status": "S",
+            "p_infection": 0.15258609592825143
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.5225886779854558,
+            "risk": 0,
+            "id": 8,
+            "status": "S",
+            "p_infection": 0.2783247544259357
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.5176142181618952,
+            "risk": 0,
+            "id": 9,
+            "status": "S",
+            "p_infection": 0.206328969258043
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.9065135902930492,
+            "risk": 0,
+            "id": 10,
+            "status": "S",
+            "p_infection": 0.009275178384117988
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.8092214520116421,
+            "risk": 0,
+            "id": 11,
+            "status": "S",
+            "p_infection": 0.0004185299095640027
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.5715699711459465,
+            "risk": 0,
+            "id": 12,
+            "status": "I",
+            "p_infection": 0.5325594290573112
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.9560235590757495,
+            "risk": 0,
+            "id": 13,
+            "status": "S",
+            "p_infection": 0.18880024717684252
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.13455252752796265,
+            "risk": 0,
+            "id": 14,
+            "status": "I",
+            "p_infection": 0.4470325606261467
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.5205635858232109,
+            "risk": 0,
+            "id": 15,
+            "status": "S",
+            "p_infection": 0.27869487171008744
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.6379212451635485,
+            "risk": 0,
+            "id": 16,
+            "status": "S",
+            "p_infection": 0.2265043241001118
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.9606882350761138,
+            "risk": 0,
+            "id": 17,
+            "status": "S",
+            "p_infection": 0.190088229069333
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.26807390569294154,
+            "risk": 0,
+            "id": 18,
+            "status": "S",
+            "p_infection": 0.01749548875283491
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.7586282040655239,
+            "risk": 0,
+            "id": 19,
+            "status": "S",
+            "p_infection": 0.20346180233045374
+        },
+        {
+            "type": "facility",
+            "min_person": 4,
+            "RNB": 0.40200809360048445,
+            "income": 1.0000000000000002,
+            "f_risk": 0.4412449548151484,
+            "id": 20,
+            "degree": 4,
+            "tfp": 0.6738862115767301,
+            "alpha": 0.8178944783967647,
+            "beta": 0.6752316277633358,
+            "capital": 386,
+            "productivity": 224.21878386334288
+        },
+        {
+            "type": "facility",
+            "min_person": 4,
+            "RNB": 0.21724904375218468,
+            "income": 1.0,
+            "f_risk": 0.687857311877858,
+            "id": 21,
+            "degree": 6,
+            "tfp": 0.582086162602631,
+            "alpha": 0.9439289441870967,
+            "beta": 0.0324575534970587,
+            "capital": 265,
+            "productivity": 119.5683071265171
+        },
+        {
+            "type": "facility",
+            "min_person": 4,
+            "RNB": 0.021038890731311537,
+            "income": 1.0,
+            "f_risk": 0.740970538314186,
+            "id": 24,
+            "degree": 6,
+            "tfp": 1.9429264424633805,
+            "alpha": 0.6279250768910019,
+            "beta": 0.796187770532068,
+            "capital": 598,
+            "productivity": 448.30251215588453
+        }
+    ],
+    "links": [
+        {
+            "distance": 0.8596703599254261,
+            "source": 0,
+            "target": 4
+        },
+        {
+            "distance": 0.8804792497837951,
+            "source": 0,
+            "target": 12
+        },
+        {
+            "rate_of_participation": 0.14296911752967553,
+            "time_in": 0.8333333333333334,
+            "source": 0,
+            "target": 24
+        },
+        {
+            "distance": 0.9015573707454079,
+            "source": 1,
+            "target": 10
+        },
+        {
+            "rate_of_participation": 0.1904807637527299,
+            "time_in": 0.4166666666666667,
+            "source": 1,
+            "target": 20
+        },
+        {
+            "rate_of_participation": 0.1460917184884152,
+            "time_in": 0.08333333333333333,
+            "source": 1,
+            "target": 24
+        },
+        {
+            "distance": 0.39568788746847783,
+            "source": 2,
+            "target": 3
+        },
+        {
+            "distance": 0.6516164422432716,
+            "source": 2,
+            "target": 12
+        },
+        {
+            "distance": 0.4221561196683156,
+            "source": 2,
+            "target": 17
+        },
+        {
+            "distance": 0.45837469950087,
+            "source": 3,
+            "target": 7
+        },
+        {
+            "rate_of_participation": 0.31962097177378757,
+            "time_in": 0.5,
+            "source": 3,
+            "target": 21
+        },
+        {
+            "distance": 0.7982409220365472,
+            "source": 4,
+            "target": 7
+        },
+        {
+            "distance": 0.6540951196151975,
+            "source": 4,
+            "target": 11
+        },
+        {
+            "rate_of_participation": 0.07168459260205758,
+            "time_in": 0.4166666666666667,
+            "source": 4,
+            "target": 24
+        },
+        {
+            "distance": 0.6700700914579618,
+            "source": 5,
+            "target": 14
+        },
+        {
+            "distance": 0.9663095437877576,
+            "source": 6,
+            "target": 13
+        },
+        {
+            "distance": 0.5114106001200398,
+            "source": 7,
+            "target": 8
+        },
+        {
+            "rate_of_participation": 0.13975235818826473,
+            "time_in": 0.3333333333333333,
+            "source": 7,
+            "target": 20
+        },
+        {
+            "rate_of_participation": 0.6547429955950678,
+            "time_in": 0.6666666666666666,
+            "source": 8,
+            "target": 20
+        },
+        {
+            "rate_of_participation": 0.15861452461592374,
+            "time_in": 0.6666666666666666,
+            "source": 8,
+            "target": 24
+        },
+        {
+            "distance": 0.8644271736963357,
+            "source": 9,
+            "target": 12
+        },
+        {
+            "rate_of_participation": 0.01918143004299082,
+            "time_in": 0.5,
+            "source": 9,
+            "target": 21
+        },
+        {
+            "distance": 0.7212357070297203,
+            "source": 10,
+            "target": 19
+        },
+        {
+            "rate_of_participation": 0.2566678520325466,
+            "time_in": 0.08333333333333333,
+            "source": 11,
+            "target": 24
+        },
+        {
+            "distance": 0.48890586007492326,
+            "source": 12,
+            "target": 13
+        },
+        {
+            "rate_of_participation": 0.10096348694694006,
+            "time_in": 0.75,
+            "source": 12,
+            "target": 21
+        },
+        {
+            "distance": 0.4122432056530612,
+            "source": 13,
+            "target": 15
+        },
+        {
+            "rate_of_participation": 0.015023882463937722,
+            "time_in": 0.9166666666666666,
+            "source": 13,
+            "target": 20
+        },
+        {
+            "rate_of_participation": 0.2557247876395937,
+            "time_in": 0.16666666666666666,
+            "source": 15,
+            "target": 21
+        },
+        {
+            "rate_of_participation": 0.22397219473138125,
+            "time_in": 0.5,
+            "source": 15,
+            "target": 24
+        },
+        {
+            "rate_of_participation": 0.0004952313818567414,
+            "time_in": 0.16666666666666666,
+            "source": 17,
+            "target": 21
+        },
+        {
+            "rate_of_participation": 0.30401409221483106,
+            "time_in": 0.5,
+            "source": 18,
+            "target": 21
+        }
+    ]
+}
