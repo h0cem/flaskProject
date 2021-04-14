@@ -10,13 +10,14 @@ class SimulatedAnnealing:
     # defaults
     initial_temp = 10.0
     final_temp = 0
-    alpha = 0.001
+    alpha = 0.0001
     # initialize to max
     best_risk = sys.maxsize
     solutions = []
     temperatures = []
 
     def __init__(self, graph):
+        random.seed(1)
         self.graph = graph
         self.n = t.get_number_of_person_in_graph(self.graph)
 
@@ -28,8 +29,17 @@ class SimulatedAnnealing:
                 individual[i][1] = 1
         return individual
 
+    def update_copy_graph_attr(self, g, individual):
+        t.remove_isolated_persons(g, individual)
+        t.remove_facilities_minP(g)
+        t.income_facilities(g)
+        t.rnb_facilities(g)
+
+    def append_output_solution(self, current_temp, sum_risk):
+        self.temperatures.append(current_temp)
+        self.solutions.append(sum_risk)
+
     def simulated_annealing(self, budget):
-        random.seed(1)
         rand = False
         solution = self.create_individual()
         boolean = False
@@ -42,17 +52,13 @@ class SimulatedAnnealing:
 
             individual = self.create_individual()
             # update the new graph
-            t.remove_isolated_persons(g, individual)
-            t.remove_facilities_minP(g)
-            t.income_facilities(g)
-            t.rnb_facilities(g)
+            self.update_copy_graph_attr(g, individual)
             # calculate fitness
             sum_risk = t.sum_risk_persons(g)
             d_risk = sum_risk - self.best_risk
             if t.check_budget(g, budget):
                 if d_risk < 0.0:
-                    self.temperatures.append(current_temp)
-                    self.solutions.append(sum_risk)
+                    self.append_output_solution(current_temp, sum_risk)
                     self.best_risk = sum_risk
                     solution = individual
                     boolean = True
@@ -61,37 +67,40 @@ class SimulatedAnnealing:
                 else:
                     metropolis = math.exp(-d_risk / current_temp)
                     if random.random() < metropolis:
-                        self.temperatures.append(current_temp)
-                        self.solutions.append(sum_risk)
+                        self.append_output_solution(current_temp, sum_risk)
                         self.best_risk = sum_risk
                         solution = individual
                         boolean = True
                         rand = True
-                # Step # 0/30 : T = 1, state = -7.45, cost = 55.5, new_state = -7.45, new_cost = 55.5
-                print("Step # ",
-                      final_step, "/", step,
-                      "  : T = ", current_temp,
-                      "  Total RNB = ", t.total_RNB(g),
-                      "  Risk = ", sum_risk,
-                      "  Best Risk = ", self.best_risk,
-                      "  Metropolis = ", rand
-                      )
-            else:
-                print("Step # ",
-                      final_step, "/", step,
-                      "  : T = ", current_temp,
-                      "  Budget condition Error"
-                      )
-
-            # decrement the temperature
-            current_temp -= self.alpha
-            step += 1
+                self.print_solution(g, final_step, step, current_temp, sum_risk, rand)
+                # decrement the temperature
+                current_temp -= self.alpha
+                step += 1
+            # else:
+            #     self.print_error(self, final_step, step, current_temp)
         if boolean:
             print("best risk: ", self.best_risk)
             # print("solution: \n", solution)
         else:
             print('No solution')
         return solution
+
+    def print_solution(self, g, final_step, step, current_temp, sum_risk, rand):
+        print("Step # ",
+              final_step, "/", step,
+              "  : T = ", current_temp,
+              "  Total RNB = ", t.total_RNB(g),
+              "  Risk = ", sum_risk,
+              "  Best Risk = ", self.best_risk,
+              "  Metropolis = ", rand
+              )
+
+    def print_error(self, final_step, step, current_temp):
+        print("Step # ",
+              final_step, "/", step,
+              "  : T = ", current_temp,
+              "  Budget condition Error"
+              )
 
     def see_annealing(self):
         plt.figure()

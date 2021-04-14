@@ -45,7 +45,6 @@ def init_facility(g, f, n):
     for i in range(f):
         facility = n + i
         g.add_node(facility)
-        # min_person = random.randrange(min_person, max_person, 1)
         # Company attributes
         g.nodes[facility]['type'] = 'facility'
         g.nodes[facility]['min_person'] = random.randrange(min_person, max_person, 1)
@@ -54,7 +53,7 @@ def init_facility(g, f, n):
         g.nodes[facility]['f_risk'] = 0
         g.nodes[facility]['id'] = facility
 
-        rand = random.randrange(5, 20, 1)
+        rand = random.randrange(n/20, n/5, 1)
         rate_of_participation = np.random.dirichlet(np.ones(rand), size=1)
         """
         create edges between facility and person 

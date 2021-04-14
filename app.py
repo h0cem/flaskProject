@@ -11,13 +11,13 @@ def create_random_d3_graph_dict():
     Creates a random NetworkX graph and returns a dictionary
     representation of the graph formatted for visualization in d3
     """
-    n = 20
-    f = 9
+    n = 100
+    f = 30
     p = 0.15
     g = random_graph(n, f, p)
 
     graph = sa.SimulatedAnnealing(g)
-    graph.simulated_annealing(.4)
+    graph.simulated_annealing(.5)
     graph.see_annealing()
 
     graph_dict = d3.graph_to_dict(g)
