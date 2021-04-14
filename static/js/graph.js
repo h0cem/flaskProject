@@ -13,7 +13,7 @@ var nodeSelection;
 var linkSelection;
 var circleSelection;
 var textSelection;
-var force;
+var simulation;
 
 var keyc = true,
     keys = true,
@@ -40,19 +40,18 @@ var maxScore = 1;
 
 var textColor = 'rgb(255,255,255)';
 
-var color = d3.scale.linear()
+var color = d3.scaleLinear()
     .domain([minScore, (minScore + maxScore) / 2, maxScore])
     .range(["lime", "yellow", "red"]);
 
 var linkHighlightColor = "rgb(24,39,81)";
 var highlightTrans = 0.1;
 
-var size = d3.scale.pow().exponent(1)
+var size = d3.scalePow().exponent(1)
     .domain([1, 100])
     .range([8, 24]);
 
 // Style variables
-const defaultNodeColor = "#09194a";
 const InfectedPersonColor = "#5a1111";
 const SusceptiblePersonColor = "#09194a";
 const CompanyColor = "#776823";
@@ -72,7 +71,7 @@ var maxStroke = 4.5;
 var maxBaseNodeSize = 36;
 var minZoom = 0.1;
 var maxZoom = 7;
-var zoom = d3.behavior.zoom().scaleExtent([minZoom, maxZoom]);
+var zoom = d3.zoom().scaleExtent([minZoom, maxZoom]);
 
 function getParentElement() {
     return document.getElementById(elementId).parentElement
@@ -104,16 +103,23 @@ createGSelection()
 
 distance = 50
 
+
 function createForce() {
-    force = d3.layout.force()
-        .linkDistance(function(d) {
-            if(d.hasOwnProperty('distance'))
-                return distance/d.distance
+    /*simulation = d3.layout.force()
+        .linkDistance(function (d) {
+            if (d.hasOwnProperty('distance'))
+                return distance / d.distance
             else
-                return distance*d.rate_of_participation
+                return distance * d.rate_of_participation
         })
         .charge(-500)
-        .size([w, h]);
+        .size([w, h]);*/
+    simulation = d3.forceSimulation()
+        .force("link", d3.forceLink().id(function (d) {
+            return d.id;
+        }))
+        // .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(w / 2, h / 2));
 }
 
 createForce()
@@ -123,7 +129,7 @@ function createJSON() {
     d3.json("/data", function (error, graph) {
         if (error) throw error;
         graph = graph.data;
-        console.log(graph)
+        console.log(graph.links.length)
         update(graph.links, graph.nodes);
         applyGlow();
     });
@@ -156,10 +162,12 @@ function update(dataLinks, dataNodes) {
     }
 
     function updateForceData() {
-        force
+        console.log(dataNodes)
+        console.log(dataLinks)
+        simulation
             .nodes(dataNodes)
+            .force("link")
             .links(dataLinks)
-            .start();
     }
 
     updateForceData();
@@ -183,7 +191,7 @@ function update(dataLinks, dataNodes) {
             .data(dataNodes)
             .enter().append("g")
             .attr("class", "node")
-            .call(force.drag)
+            .call(d3.drag())
     }
 
     createNodeSelection()
@@ -193,7 +201,7 @@ function update(dataLinks, dataNodes) {
             .on("dblclick.zoom", onNodeDoubleClick)
             .on("mouseover", onNodeMouseOver)
             .on("mousedown", onNodeMouseDown)
-            .on("mouseout", onNodeMouseOut);
+            .on("mouseout", onNodeMouseOut)
     }
 
     function onNodeDoubleClick(node) {
@@ -276,31 +284,29 @@ function update(dataLinks, dataNodes) {
                         weight
                     }))(d), null, 4)
             })
-            .attr("d", d3.svg.symbol()
+            .attr("d", d3.symbol()
                 .size(function (d) {
-                    //calculates area
-                    return Math.PI * Math.pow(size(d.size) || nominalBaseNodeSize, 2);
+                    return d.data.value * 30;
                 })
                 .type(function (d) {
-                    if (d.type == "person")
-                        return "cirlce";
-                    else
-                        return "diamond"
+                    if
+                    (d.data.value >= 9) {
+                        return d3.symbolCross;
+                    } else if
+                    (d.data.value <= 9) {
+                        return d3.symbolDiamond;
+                    }
                 }))
-            .style(tocolor, function (d) {
-                if (isNumber(d.score) && d.score >= 0) return color(d.score);
-                else { //return defaultNodeColor;
-                    if (d.type == "person")
-                        if (d.status == "I")
-                            return InfectedPersonColor
-                        else
-                            return SusceptiblePersonColor
+            .style("fill", function (d) {
+                if (d.type == "person")
+                    if (d.status == "I")
+                        return InfectedPersonColor
                     else
-                        return CompanyColor
-                }
+                        return SusceptiblePersonColor
+                else
+                    return CompanyColor
             })
             .style("stroke-width", 0)
-            .style(towhite, "white");
     }
 
     createCircle();
@@ -310,7 +316,6 @@ function update(dataLinks, dataNodes) {
             .data(dataNodes)
             .enter().append("text")
             .attr("dy", ".35em");
-        // console.log(dataNodes)
     }
 
     createText();
@@ -429,14 +434,38 @@ function update(dataLinks, dataNodes) {
 
     svgSelection.call(zoom);
 
-    resize();
+    // resize();
 
-    d3.select(window).on("resize", resize).on("keydown", keydown);
+    // d3.select(window).on("resize", resize).on("keydown", keydown);
 
-    force.on("tick", tick)
+    simulation.on("tick", ticked)
 
-    function tick(e) {
-        var k = 6 * e.alpha;
+    function ticked() {
+        link
+            .attr("x1", function (d) {
+                return d.source.x;
+            })
+            .attr("y1", function (d) {
+                return d.source.y;
+            })
+            .attr("x2", function (d) {
+                return d.target.x;
+            })
+            .attr("y2", function (d) {
+                return d.target.y;
+            });
+
+        node
+            .attr("cx", function (d) {
+                return d.x;
+            })
+            .attr("cy", function (d) {
+                return d.y;
+            });
+    }
+
+    /*function tick() {
+        var k = 6 * simulation.alpha;
 
         // Push sources up and targets down to form a weak tree.
         linkSelection
@@ -469,21 +498,21 @@ function update(dataLinks, dataNodes) {
             .attr("cy", function (d) {
                 return d.y;
             });
-    }
+    }*/
 
-    function resize() {
-        var width = window.innerWidth,
-            height = window.innerHeight;
-        svgSelection.attr("width", width).attr("height", height);
-
-        force.size([force.size()[0] + (width - w) / zoom.scale(), force.size()[1] + (height - h) / zoom.scale()]).resume();
-        w = width;
-        h = height;
-    }
+    // function resize() {
+    //     var width = window.innerWidth,
+    //         height = window.innerHeight;
+    //     svgSelection.attr("width", width).attr("height", height);
+    //
+    //     force.size([force.size()[0] + (width - w) / zoom.scale(), force.size()[1] + (height - h) / zoom.scale()]).resume();
+    //     w = width;
+    //     h = height;
+    // }
 
     function keydown() {
-        if (d3.event.keyCode == 32) {
-            force.stop();
+        if (d3.event.keyCode === 32) {
+            simulation.stop();
         } else if (d3.event.keyCode >= 48 && d3.event.keyCode <= 90 && !d3.event.ctrlKey && !d3.event.altKey && !d3.event.metaKey) {
             switch (String.fromCharCode(d3.event.keyCode)) {
                 case "C":

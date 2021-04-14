@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import random
 import graph as cg  # covid graph
+import tools as t  # covid graph
 
 
 class GA:
@@ -19,13 +20,7 @@ class GA:
         self.size = size
         self.graph = graph
 
-        print("graph_initial: ", graph.nodes)
-        update_graph_attributes(self.graph)
-        print("facility_min : ", graph.nodes)
-        remove_infected_person(self.graph)
-        print("graph_update : ", graph.nodes)
-
-        self.n = get_number_of_person_in_graph(self.graph)
+        self.n = t.get_number_of_person_in_graph(self.graph)
         self.population = self.initialization()
 
     """
@@ -39,7 +34,7 @@ class GA:
     def ga(self):
         g = self.graph.copy()
         # self.fitness(g)
-        print(total_RNB(g))
+        print(t.total_RNB(g))
         return g
 
     def initialization(self):
@@ -72,7 +67,7 @@ class GA:
             graph = g.copy()
             # print(g.nodes)
             # print(individual.size)
-            individual_fitness(graph, individual, self.n)
+            t.individual_fitness(graph, individual, self.n)
 
     """
         Selection
@@ -115,78 +110,6 @@ class GA:
         pass
 
     def constraint(self):
-        facility_min_person(self.graph)
+        t.remove_facilities_minP(self.graph)
         # attribute :: facility_risk, income
         cg.update_facility_attributes(self.graph)
-
-
-# /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
-# #######################  FUNCTIONS  ########################
-# /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
-
-def update_graph_attributes(g):
-    facility_min_person(g)
-    cg.update_facility_attributes(g)
-    # cg.risk_person(g)
-
-
-def remove_infected_person(g):
-    for person in list(g.nodes):
-        if g.nodes[person]['type'] == 'person' and g.nodes[person]['status'] == 'I':
-            g.remove_node(person)
-
-
-def individual_fitness(g: nx, individual, n: np):
-    """
-    here we calculate the fitness of one individual
-
-    Minimize ∑r(𝑣) sum of risks
-
-    we must recalculate the risk of each person, after deleted or isolate persons, so firs we update facility
-    attributes than persons risks and finally check if number of persons in facility is greater than n_min
-    """
-    # for person in list(g.nodes):
-    #     if g.nodes[person]['type'] == 'person' and individual[person] == 0:
-    #         g.remove_node(person)
-
-    risk_individual = 0
-    i = 0
-    for person in n:
-        risk_individual += (g.nodes[person]['risk'] * individual[i])
-        i += 1
-    print(risk_individual)
-    print("_____________________")
-
-
-def get_number_of_person_in_graph(g):
-    # n_id identified of each node in new graph
-    n = []
-    for node in list(g.nodes):
-        if g.nodes[node]['type'] == 'person':
-            n.append(g.nodes[node]['id'])
-    n_id = np.array(n)
-    print(n_id)
-    return n_id
-
-
-def check_facility_min_person(g, facility):
-    if g.degree(facility) < g.nodes[facility]['min_person']:
-        return True
-
-
-def facility_min_person(g: nx):
-    """
-    if N_person < N_person_min:: remove facility
-    """
-    for facility in list(g.nodes):
-        if g.nodes[facility]['type'] == 'facility':
-            if check_facility_min_person(g, facility):
-                g.remove_node(facility)
-
-
-def total_RNB(g: nx):
-    rnb = 0
-    for facility in list(g.nodes):
-        if g.nodes[facility]['type'] == 'facility':
-            rnb += g.nodes[facility]['RNB']
-    return rnb

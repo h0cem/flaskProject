@@ -6,18 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Force Graph Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style src="/static/css/graph"></style>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/graph.css') }}">
+
+
+    <!-- JQuery links  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 
 <body>
-<!-- Tippy -->
-{#<script src="https://unpkg.com/tippy.js@2.5.2/dist/tippy.all.min.js"></script>#}
+{#<script> var a = {{ g }} console.log(a.nodes)</script>#}
+<!-- tippy -->
 <script src="/static/tippy.js@2.5.2.min.js"></script>
 <!-- d3 lib -->
-{#<script src="https://d3js.org/d3.v3.min.js"></script>#}
-<script src="/static/d3.v3.min.js"></script>
+<script src="/static/d3.v4.min.js"></script>
 <div id="d3-graph"></div>
-<script src="/static/js/graph.js"></script>
+{#<script src="/static/js/graph.js"></script>#}
+<script src="/static/js/src.js"></script>
 </body>
 
 </html>
