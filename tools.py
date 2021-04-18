@@ -6,12 +6,30 @@ import numpy as np
 # #######################  FUNCTIONS  ########################
 # /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 
+class Gene:
+    def __init__(self, id, isolated):
+        self.id = id
+        self.isolated = isolated
+
+
+class Individual:
+    def __init__(self, individual, fitness):
+        self.individual = individual
+        self.fitness = fitness
+
+
+def print_chromosome(chromosome):
+    for gene in chromosome.individual:
+        print(gene.id, gene.isolated, end=' ')
+    print(chromosome.fitness)
+
+
 def set_graph_attributes(g):
     risk_facilities(g)
     risk_persons(g)
 
-    # remove_infected_persons(g)
-    # remove_facilities_minP(g)
+    remove_infected_persons(g)
+    remove_facilities_minP(g)
 
     income_facilities(g)
     rnb_facilities(g)
@@ -45,14 +63,13 @@ def individual_fitness(g: nx, individual, n: np):
     print("_____________________")
 
 
-def get_number_of_person_in_graph(g):
+def get_persons_id(g):
     # n_id identified of each node in new graph
     n = []
     for node in list(g.nodes):
         if g.nodes[node]['type'] == 'person':
             n.append(g.nodes[node]['id'])
-    n_id = np.array(n, dtype=int)
-    return n_id
+    return n
 
 
 def risk_facilities(g):
@@ -186,10 +203,16 @@ def total_RNB(g: nx):
 
 
 def remove_isolated_persons(g, individual):
-    j = 0
-    for person in list(g.nodes):
-        if g.nodes[person]['type'] == 'person':
-            if individual[j][1] == 0:
-                g.remove_node(person)
-                # print("node_id: ", person, " is deleted!")
-            j += 1
+    for person in range(len(individual)):
+        if individual[person].isolated:
+            g.remove_node(individual[person].id)
+            # print("node_id: ", individual[person].id, " is deleted!", individual[person].isolated)
+
+
+def update_copy_graph_attr(g, individual):
+    # print(g.nodes)
+    remove_isolated_persons(g, individual)
+    # print(g.nodes)
+    remove_facilities_minP(g)
+    income_facilities(g)
+    rnb_facilities(g)

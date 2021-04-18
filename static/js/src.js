@@ -191,7 +191,7 @@ function update(dataLinks, dataNodes) {
             .attr("d", d3.symbol()
                 .size((d) => {
                     if (d.type === "person") {
-                        return d.risk * 30
+                        return d.risk * 40
                     } else {
                         return 250
                     }
@@ -263,6 +263,7 @@ function update(dataLinks, dataNodes) {
         d.fx = d.x;
         d.fy = d.y;
         focusNode = d;
+        console.log(focusNode)
         setFocus(d);
         if (highlightNode === null) {
             setHighlight(d);
@@ -333,7 +334,7 @@ function update(dataLinks, dataNodes) {
                     if (d.type === "person") {
                         return d.risk * 40
                     } else {
-                        return 150
+                        return 250
                     }
                 })
                 .type((d) => {
@@ -359,6 +360,7 @@ function update(dataLinks, dataNodes) {
     function setHighlight(node) {
         svgSelection.style("cursor", "pointer");
         if (focusNode !== null) node = focusNode;
+        console.log(focusNode)
         highlightNode = node;
 
         if (linkHighlightColor !== "white") {
