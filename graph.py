@@ -74,7 +74,7 @@ class Graph:
             self.g.add_node(facility)
             # Company attributes
             self.g.nodes[facility]['type'] = 'facility'
-            self.g.nodes[facility]['min_person'] = random.randrange(self.min_person, int(self.min_person * 1.25), 1)
+            self.g.nodes[facility]['min_person'] = random.randrange(self.min_person, int(self.min_person * 1.5), 1)
             self.g.nodes[facility]['RNB'] = rnb[0, i]
             self.g.nodes[facility]['income'] = 0
             self.g.nodes[facility]['f_risk'] = 0

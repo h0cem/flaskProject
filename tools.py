@@ -1,5 +1,4 @@
 import networkx as nx
-import numpy as np
 
 
 # /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -7,8 +6,8 @@ import numpy as np
 # /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 
 class Gene:
-    def __init__(self, id, isolated):
-        self.id = id
+    def __init__(self, node_id, isolated):
+        self.id = node_id
         self.isolated = isolated
 
 
@@ -43,24 +42,6 @@ def remove_infected_persons(g):
 
 def is_infected_person(g, person):
     return g.nodes[person]['type'] == 'person' and g.nodes[person]['status'] == 'I'
-
-
-def individual_fitness(g: nx, individual, n: np):
-    """
-    here we calculate the fitness of one individual
-
-    Minimize ∑r(𝑣) sum of risks
-
-    we must recalculate the risk of each person, after deleted or isolate persons, so firs we update facility
-    attributes than persons risks and finally check if number of persons in facility is greater than n_min
-    """
-    risk_individual = 0
-    i = 0
-    for person in n:
-        risk_individual += (g.nodes[person]['risk'] * individual[i])
-        i += 1
-    print(risk_individual)
-    print("_____________________")
 
 
 def get_persons_id(g):

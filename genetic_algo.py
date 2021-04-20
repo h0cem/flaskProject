@@ -3,6 +3,8 @@ import random
 import tools as t  # covid graph
 from termcolor import colored
 import numpy as np
+import matplotlib.pyplot as plt  # to plot
+from datetime import datetime, timedelta
 
 
 class GA:
@@ -12,6 +14,10 @@ class GA:
     n: numpy vector have id of nodes
     population: population that have (size) m individuals
     """
+
+    solution = []
+    gen = []
+
 
     def __init__(self, graph, generation, size, budget, elite, selection_strategy, crossover_strategy, p_mutation,
                  p_crossover):
@@ -37,55 +43,89 @@ class GA:
 """
 
     def ga(self):
-        print("Start Genetic Algo       ", end='   ')
+        random.seed()
+        generation = 0
 
-        i = 0
+        self.gen = []
+        self.solution = []
+
+        startTime = datetime.now()
+
+        for i in self.population:
+            self.fitness(i)
+
         old_pop = self.population
-        # plt.figure()
-        # plt.title("risk")
-        while i < self.generation:
+        self.solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
+        self.gen.append(generation)
+        while generation < self.generation and datetime.now() - startTime < timedelta(seconds=10):
             new_pop = []
-            new_pop.extend(self.elitism(old_pop, self.elite))
+            # new_pop.extend(self.elitism(old_pop, self.elite))
             while len(new_pop) < self.size:
-                # CrossOver if random > p_crossover
+
+                # SELECTION :: check if parent_1 != parent_2
                 while True:
-                    parent_1, parent_2 = self.selection(old_pop), self.selection(old_pop)
-                    if parent_1 != parent_2:
+                    parent_1 = self.selection(old_pop)
+                    parent_2 = self.selection(old_pop)
+                    if not self.check_if_same_parents(parent_1, parent_2):
                         break
-                if random.random() > self.P_CROSSOVER:
+                    # else:
+                    #     self.print_parents(parent_1, parent_2)
+
+                # CrossOver if random < p_crossover
+                if random.random() < self.P_CROSSOVER:
                     child_1, child_2 = self.crossover(parent_1, parent_2)
-                    if self.fitness(child_1):
-                        new_pop.append(child_1)
+                    # Mutation
+                    self.mutation(child_1)
+                    self.fitness(child_1)
+                    new_pop.append(child_1)
+
                     if len(new_pop) < self.size:
-                        if self.fitness(child_2):
-                            new_pop.append(child_2)
+                        self.mutation(child_2)
+                        self.fitness(child_2)
+                        new_pop.append(child_2)
                     else:
                         break
+
                 # if no crossover happens, we will chose the best of parents and add it to the population
                 else:
                     if len(new_pop) < self.size:
                         if parent_1.fitness < parent_2.fitness:
+                            self.mutation(parent_1)
+                            self.fitness(parent_1)
                             new_pop.append(parent_1)
                         else:
+                            self.mutation(parent_2)
+                            self.fitness(parent_2)
                             new_pop.append(parent_2)
 
-            # Mutation if random > p_mutation
-            for index in range(self.elite, len(self.population)):
-                if random.random() > self.P_MUTATION:
-                    chromosome = self.mutation(new_pop[index])
-                    if self.fitness(chromosome):
-                        new_pop[index] = chromosome
+            # print("*************************************", generation, "************************************")
+            for i in new_pop:
+                self.fitness(i)
+            # print(min(new_pop, key=lambda x: x.fitness).fitness)
+            # for i in new_pop:
+            #     for j in i.individual:
+            #         print(j.id, j.isolated, end='   ')
+            #     print(i.fitness)
 
+            # if self.checkIfDuplicates_2(new_pop):
+            #     print("*************************************************")
             old_pop = new_pop
-            i += 1
-            # print("#", i, "")
-            # plt.scatter(i, risk)
-        # plt.show()
+            generation += 1
+            self.solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
+            self.gen.append(generation)
 
-        risk = sys.maxsize
-        for ind in old_pop:
-            risk = min(risk, ind.fitness)
-        print("best risk: ", risk)
+        for i in old_pop:
+            for j in i.individual:
+                print(j.id, j.isolated, end='   ')
+            print(i.fitness)
+        plt.figure()
+        plt.title("risk")
+        plt.plot(self.gen, self.solution)
+        plt.show()
+
+        # print("#", i, "")
+
+        print("best risk: ", min(self.solution))
 
     def create_individual(self):
         individual = []
@@ -120,7 +160,7 @@ class GA:
         """
         return self.create_population()
 
-    def fitness(self, individual):
+    def fitness(self, child):
         """
             Fitness
         The fitness of each individual is what defines what we are optimizing for, so that, given a chromosome
@@ -130,13 +170,86 @@ class GA:
         After all, individuals have their fitness score calculated, they are sorted, so that the fittest individuals
         can be selected for crossover.
         """
+        g = self.update_graph_attr(child)
+        if self.constraint(g):
+            child.fitness = t.sum_risk_persons(g)
+        else:
+            g = self.reparation(child)
+            child.fitness = t.sum_risk_persons(g)
+
+    def reparation(self, chromosome):
+        g = self.update_graph_attr(chromosome)
+        while not self.constraint(g):
+            # self.mutate(chromosome)
+            n = len(self.persons_id) - 1
+            while True:
+                offset = random.randint(0, n)
+                if chromosome.individual[offset].isolated:
+                    chromosome.individual[offset].isolated = False
+                    break
+            # while True:
+            #     offset = random.randint(0, n)
+            #     if not chromosome.individual[offset].isolated:
+            #         chromosome.individual[offset].isolated = True
+            #         break
+            g = self.update_graph_attr(chromosome)
+        return g
+
+    def mutation(self, chromosome):
+        """
+        Mutation is the process by which we introduce new genetic material in the population, allowing the algorithm
+        to search a larger space. If it were not for mutation, the existing genetic material diversity in a
+        population would not increase, and, due to some individuals “dying” between generations, would actually be
+        reduced, with individuals tending to become very similar quite fast.
+        In terms of the optimization problem, this means that without new genetic material the algorithm can converge
+        to local optima before it explores an enough large size of the input space to make sure that we can reach
+        the global optimum. Therefore, mutation plays a big role in maintaining diversity in the population
+        and allowing it to evolve to fitter solutions to the problem.
+        """
+        if random.random() < self.P_MUTATION:
+            self.mutate(chromosome)
+
+    def mutate(self, chromosome):
+        n = len(self.persons_id) - 1
+        offset = random.randint(0, n)
+        if chromosome.individual[offset].isolated:
+            chromosome.individual[offset].isolated = False
+        else:
+            chromosome.individual[offset].isolated = True
+
+    def num_isolated(self, chromosome):
+        count = 0
+        for i in chromosome.individual:
+            if i.isolated:
+                count += 1
+        return count
+
+    def check_if_same_parents(self, parent_1, parent_2):
+        check = False
+        n = len(self.persons_id)
+        for i in range(0, n):
+            if parent_1.individual[i].isolated == parent_2.individual[i].isolated:
+                check = True
+            else:
+                return False
+        return check
+
+    def print_parents(self, parent_1, parent_2):
+        print('parent_1 == parent_2')
+        for j in parent_1.individual:
+            print(j.id, j.isolated, end='   ')
+        print(parent_1.fitness)
+        for j in parent_2.individual:
+            print(j.id, j.isolated, end='   ')
+        print(parent_2.fitness)
+
+    def update_graph_attr(self, individual):
         g = self.graph.copy()
         t.update_copy_graph_attr(g, individual.individual)
-        if t.check_budget(g, self.budget):
-            individual.fitness = t.sum_risk_persons(g)
-            return True
-        else:
-            return False
+        return g
+
+    def constraint(self, g):
+        return t.check_budget(g, self.budget)
 
     def selection(self, pop):
         """
@@ -159,12 +272,13 @@ class GA:
         and then selects the fittest individual. This option has the advantage that it does not require the individuals
         to be sorted by fitness first.
         """
+        # random.seed()
         if self.selection_strategy == "random":
             return self.random_selection(pop)
         elif self.selection_strategy == "roulette_wheel":
             return self.roulette_wheel_selection(pop)
         elif self.selection_strategy == "tournament":
-            pass
+            return self.tournament_selection(pop)
         elif self.selection_strategy == "pairing":
             pass
         else:
@@ -197,15 +311,24 @@ class GA:
 
         return selected
 
-    def tounament_selection(self, pop):
+    def tournament_selection(self, pop):
+        """
+            In tournament selection, each parent is the fittest out of k randomly chosen chromosomes of the population
+        """
         k = 3
+        n = len(pop) - 1
         # first random selection
-        selected = random.randint(len(pop))
-        for index in random.randint(0, len(pop) - 1, k - 1):
+        selected = random.randint(0, n)
+        while k > 0:
+            index = random.randint(0, n)
             # check if better (e.g. perform a tournament)
-            if pop[index].fitness < pop[selected].fitness:
+            if pop[index].fitness <= pop[selected].fitness:
                 selected = index
+            k -= 1
         return pop[selected]
+
+    def best_selection(self, pop):
+        return min(pop, key=lambda x: x.fitness)
 
     def crossover(self, parent_1, parent_2):
         """
@@ -222,7 +345,7 @@ class GA:
         if self.crossover_strategy == "one_point":
             return self.one_point_crossover(parent_1, parent_2)
         elif self.crossover_strategy == "two_point":
-            pass
+            return self.two_points_crossover(parent_1, parent_2)
         else:
             print(colored('Error: undefined CrossOver strategy', 'red'))
 
@@ -232,6 +355,7 @@ class GA:
             1. check offset of crossOver value ... done
             3. pretty print
             4. random selection with same parent
+            5. check redandante ... in pop
         https://towardsdatascience.com/introducing-geneal-a-genetic-algorithm-python-library-db69abfc212c
         1. The crossover gene of each offspring is calculated according to the rule given by:
             P_new1 = P_1a - \beta [P_1a-P_2a]
@@ -255,24 +379,38 @@ class GA:
 
         return new_chromosome_1, new_chromosome_2
 
-    def mutation(self, chromosome):
+    def two_points_crossover(self, parent_1, parent_2):
         """
-        Mutation is the process by which we introduce new genetic material in the population, allowing the algorithm
-        to search a larger space. If it were not for mutation, the existing genetic material diversity in a
-        population would not increase, and, due to some individuals “dying” between generations, would actually be
-        reduced, with individuals tending to become very similar quite fast.
-        In terms of the optimization problem, this means that without new genetic material the algorithm can converge
-        to local optima before it explores an enough large size of the input space to make sure that we can reach
-        the global optimum. Therefore, mutation plays a big role in maintaining diversity in the population
-        and allowing it to evolve to fitter solutions to the problem.
+        TODO:
+            1. check offset of crossOver value ... done
+            3. pretty print
+            4. random selection with same parent
+            5. check redandante ... in pop
+        https://towardsdatascience.com/introducing-geneal-a-genetic-algorithm-python-library-db69abfc212c
+        1. The crossover gene of each offspring is calculated according to the rule given by:
+            P_new1 = P_1a - \beta [P_1a-P_2a]
+            P_new2 = P_2a 2 \beta [P_1a-P_2a]
         """
+        chromosome_1 = []
+        chromosome_2 = []
+        # generating the random number [0, n] to perform crossover, n is size of individual
         n = len(self.persons_id) - 1
-        offset = random.randint(0, n)
-        if chromosome.individual[offset].isolated:
-            chromosome.individual[offset].isolated = False
-        else:
-            chromosome.individual[offset].isolated = True
-        return chromosome
+        start = random.randint(0, n)
+        end = random.randint(start, n)
+
+        # interchanging the genes
+        chromosome_1.extend(parent_1.individual[:start])
+        chromosome_1.extend(parent_2.individual[start:end])
+        chromosome_1.extend(parent_1.individual[end:])
+
+        chromosome_2.extend(parent_2.individual[:start])
+        chromosome_2.extend(parent_1.individual[start:end])
+        chromosome_2.extend(parent_2.individual[end:])
+
+        new_chromosome_1 = t.Individual(chromosome_1, sys.maxsize)
+        new_chromosome_2 = t.Individual(chromosome_2, sys.maxsize)
+
+        return new_chromosome_1, new_chromosome_2
 
     def elitism(self, pop, k):
         """
