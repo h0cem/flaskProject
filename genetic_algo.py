@@ -5,7 +5,6 @@ from termcolor import colored
 import numpy as np
 import matplotlib.pyplot as plt  # to plot
 from datetime import datetime, timedelta
-from copy import deepcopy
 
 
 class GA:
@@ -20,7 +19,7 @@ class GA:
     gen = []
 
     def __init__(self, graph, generation, size, budget, elite, selection_strategy, crossover_strategy, p_mutation,
-                 p_crossover):
+                 p_crossover, k):
         self.graph = graph
         self.generation = generation
         self.size = size
@@ -30,6 +29,7 @@ class GA:
         self.crossover_strategy = crossover_strategy
         self.P_CROSSOVER = p_crossover
         self.P_MUTATION = p_mutation
+        self.tournament_k = k
 
         self.persons_id = t.get_persons_id(self.graph)
         self.population = self.initialization()
@@ -50,48 +50,43 @@ class GA:
 
         start_time = datetime.now()
 
-        for i in self.population:
-            self.fitness(i)
-
         old_pop = self.population
         self.solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
         self.gen.append(generation)
 
+        random.seed()
         while generation < self.generation and datetime.now() - start_time < timedelta(seconds=50):
-            random.seed()
+            # create a new population
             new_pop = []
-            # new_pop.extend(self.elitism(old_pop, self.elite))
-            # print("---------------------------------- old pop START---------------------------------------")
-            # for i in old_pop:
-            #     for j in i.individual:
-            #         print(j.id, j.isolated, end='   ')
-            #     print(i.fitness)
-            # print(self.check_duplications(old_pop, old_pop))
-            # print("-------------------------------------- old pop END --------------------------------------")
-            # print("*************************************", generation, "************************************")
+            # the new population must have the same size
             while len(new_pop) < self.size and datetime.now() - start_time < timedelta(seconds=50):
+
                 start = datetime.now()
+
+                parent_1 = []
+                parent_2 = []
                 # SELECTION :: check if parent_1 != parent_2
                 while True and datetime.now() - start < timedelta(seconds=5):
                     parent_1 = self.selection(old_pop)
                     parent_2 = self.selection(old_pop)
                     if not self.check_if_same_parents(parent_1, parent_2):
                         break
-                    # else:
-                    #     self.print_parents(parent_1, parent_2)
 
                 # CrossOver if random < p_crossover
                 if random.random() < self.P_CROSSOVER:
                     child_1, child_2 = self.crossover(parent_1, parent_2)
+
                     # Mutation
                     self.mutation(child_1)
+                    # Add child
                     if not new_pop and self.fitness(child_1):
                         new_pop.append(child_1)
                     else:
                         if not self.check_if_in_population(new_pop, child_1) and self.fitness(child_1):
                             new_pop.append(child_1)
-
+                    # check size of population then add child
                     if len(new_pop) < self.size:
+                        # Mutation
                         self.mutation(child_2)
                         if not self.check_if_in_population(new_pop, child_2) and self.fitness(child_2):
                             new_pop.append(child_2)
@@ -102,6 +97,7 @@ class GA:
                 else:
                     if len(new_pop) < self.size:
                         if parent_1.fitness < parent_2.fitness:
+                            # Mutation
                             self.mutation(parent_1)
                             if not new_pop and self.fitness(parent_1):
                                 new_pop.append(parent_1)
@@ -109,6 +105,7 @@ class GA:
                                 if not self.check_if_in_population(new_pop, parent_1) and self.fitness(parent_1):
                                     new_pop.append(parent_1)
                         else:
+                            # Mutation
                             self.mutation(parent_2)
                             if not new_pop and self.fitness(parent_2):
                                 new_pop.append(parent_2)
@@ -118,22 +115,23 @@ class GA:
 
             old_pop = new_pop
             generation += 1
-            print(generation, min(old_pop, key=lambda x: x.fitness).fitness)
             self.solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
             self.gen.append(generation)
 
         plt.figure()
         plt.title("risk")
-        plt.plot(self.solution)
+        plt.plot(sorted(self.solution, reverse=True))
         plt.show()
-
-        # print("#", i, "")
 
         print("best risk: ", min(self.solution))
 
-    def print_(self, i):
+    def print_chromosome(self, i):
         for j in i.individual:
-            print(j.id, j.isolated, end='   ')
+            # print(j.id, end=' ')
+            if j.isolated:
+                print("0", end='  ')
+            else:
+                print("1", end='  ')
         print(i.fitness)
 
     def create_individual(self):
@@ -208,13 +206,14 @@ class GA:
 
     def reparation(self, chromosome):
         g = self.update_graph_attr(chromosome)
+        n = len(self.persons_id) - 1
         while not self.constraint(g):
-            n = len(self.persons_id) - 1
             offset = random.randint(0, n)
             if chromosome.individual[offset].isolated:
                 chromosome.individual[offset].isolated = False
             else:
                 chromosome.individual[offset].isolated = True
+
             g = self.update_graph_attr(chromosome)
         return g
 
@@ -358,7 +357,7 @@ class GA:
         """
             In tournament selection, each parent is the fittest out of k randomly chosen chromosomes of the population
         """
-        k = 3
+        k = self.tournament_k
         n = len(pop) - 1
         # first random selection
         selected = random.randint(0, n)
@@ -409,7 +408,6 @@ class GA:
         # generating the random number [0, n] to perform crossover, n is size of individual
         n = len(self.persons_id) - 1
         offset = random.randint(0, n)
-
         # interchanging the genes
         chromosome_1.extend(parent_1.individual[:offset])
         chromosome_1.extend(parent_2.individual[offset:])
@@ -440,7 +438,6 @@ class GA:
         n = len(self.persons_id) - 1
         start = random.randint(0, n)
         end = random.randint(start, n)
-
         # interchanging the genes
         chromosome_1.extend(parent_1.individual[:start])
         chromosome_1.extend(parent_2.individual[start:end])
