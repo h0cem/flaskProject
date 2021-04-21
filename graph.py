@@ -68,14 +68,15 @@ class Graph:
         :param n: Number of person
         """
         # generate f random numbers (integer >=0) which sum up to exactly 1
-        rnb = np.random.dirichlet(np.ones(self.f), size=1)
+        rnb = np.random.uniform(low=0.0, high=1.0, size=self.f)
+        rnb /= np.sum(rnb)
         for i in range(self.f):
             facility = self.n + i
             self.g.add_node(facility)
             # Company attributes
             self.g.nodes[facility]['type'] = 'facility'
             self.g.nodes[facility]['min_person'] = random.randrange(self.min_person, int(self.min_person * 1.5), 1)
-            self.g.nodes[facility]['RNB'] = rnb[0, i]
+            self.g.nodes[facility]['RNB'] = rnb[i]
             self.g.nodes[facility]['income'] = 0
             self.g.nodes[facility]['f_risk'] = 0
             self.g.nodes[facility]['id'] = facility

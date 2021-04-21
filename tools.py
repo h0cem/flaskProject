@@ -33,6 +33,13 @@ def set_graph_attributes(g):
     income_facilities(g)
     rnb_facilities(g)
 
+    facility_degree(g)
+
+
+def facility_degree(g):
+    for facility in list(g.nodes):
+        if g.nodes[facility]['type'] == 'facility':
+            g.nodes[facility]['workers'] = g.degree(facility)
 
 def remove_infected_persons(g):
     for person in list(g.nodes):
@@ -164,6 +171,7 @@ def remove_facilities_minP(g: nx):
         if g.nodes[facility]['type'] == 'facility':
             if facility_min_person(g, facility):
                 g.remove_node(facility)
+            # g.nodes[facility]['workers'] = g.degree(facility)
 
 
 def facility_min_person(g, facility):

@@ -5,6 +5,7 @@ from termcolor import colored
 import numpy as np
 import matplotlib.pyplot as plt  # to plot
 from datetime import datetime, timedelta
+from copy import deepcopy
 
 
 class GA:
@@ -17,7 +18,6 @@ class GA:
 
     solution = []
     gen = []
-
 
     def __init__(self, graph, generation, size, budget, elite, selection_strategy, crossover_strategy, p_mutation,
                  p_crossover):
@@ -43,13 +43,12 @@ class GA:
 """
 
     def ga(self):
-        random.seed()
         generation = 0
 
         self.gen = []
         self.solution = []
 
-        startTime = datetime.now()
+        start_time = datetime.now()
 
         for i in self.population:
             self.fitness(i)
@@ -57,13 +56,23 @@ class GA:
         old_pop = self.population
         self.solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
         self.gen.append(generation)
-        while generation < self.generation and datetime.now() - startTime < timedelta(seconds=10):
+
+        while generation < self.generation and datetime.now() - start_time < timedelta(seconds=50):
+            random.seed()
             new_pop = []
             # new_pop.extend(self.elitism(old_pop, self.elite))
-            while len(new_pop) < self.size:
-
+            # print("---------------------------------- old pop START---------------------------------------")
+            # for i in old_pop:
+            #     for j in i.individual:
+            #         print(j.id, j.isolated, end='   ')
+            #     print(i.fitness)
+            # print(self.check_duplications(old_pop, old_pop))
+            # print("-------------------------------------- old pop END --------------------------------------")
+            # print("*************************************", generation, "************************************")
+            while len(new_pop) < self.size and datetime.now() - start_time < timedelta(seconds=50):
+                start = datetime.now()
                 # SELECTION :: check if parent_1 != parent_2
-                while True:
+                while True and datetime.now() - start < timedelta(seconds=5):
                     parent_1 = self.selection(old_pop)
                     parent_2 = self.selection(old_pop)
                     if not self.check_if_same_parents(parent_1, parent_2):
@@ -76,13 +85,16 @@ class GA:
                     child_1, child_2 = self.crossover(parent_1, parent_2)
                     # Mutation
                     self.mutation(child_1)
-                    self.fitness(child_1)
-                    new_pop.append(child_1)
+                    if not new_pop and self.fitness(child_1):
+                        new_pop.append(child_1)
+                    else:
+                        if not self.check_if_in_population(new_pop, child_1) and self.fitness(child_1):
+                            new_pop.append(child_1)
 
                     if len(new_pop) < self.size:
                         self.mutation(child_2)
-                        self.fitness(child_2)
-                        new_pop.append(child_2)
+                        if not self.check_if_in_population(new_pop, child_2) and self.fitness(child_2):
+                            new_pop.append(child_2)
                     else:
                         break
 
@@ -91,41 +103,38 @@ class GA:
                     if len(new_pop) < self.size:
                         if parent_1.fitness < parent_2.fitness:
                             self.mutation(parent_1)
-                            self.fitness(parent_1)
-                            new_pop.append(parent_1)
+                            if not new_pop and self.fitness(parent_1):
+                                new_pop.append(parent_1)
+                            else:
+                                if not self.check_if_in_population(new_pop, parent_1) and self.fitness(parent_1):
+                                    new_pop.append(parent_1)
                         else:
                             self.mutation(parent_2)
-                            self.fitness(parent_2)
-                            new_pop.append(parent_2)
+                            if not new_pop and self.fitness(parent_2):
+                                new_pop.append(parent_2)
+                            else:
+                                if not self.check_if_in_population(new_pop, parent_2) and self.fitness(parent_2):
+                                    new_pop.append(parent_2)
 
-            # print("*************************************", generation, "************************************")
-            for i in new_pop:
-                self.fitness(i)
-            # print(min(new_pop, key=lambda x: x.fitness).fitness)
-            # for i in new_pop:
-            #     for j in i.individual:
-            #         print(j.id, j.isolated, end='   ')
-            #     print(i.fitness)
-
-            # if self.checkIfDuplicates_2(new_pop):
-            #     print("*************************************************")
             old_pop = new_pop
             generation += 1
+            print(generation, min(old_pop, key=lambda x: x.fitness).fitness)
             self.solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
             self.gen.append(generation)
 
-        for i in old_pop:
-            for j in i.individual:
-                print(j.id, j.isolated, end='   ')
-            print(i.fitness)
         plt.figure()
         plt.title("risk")
-        plt.plot(self.gen, self.solution)
+        plt.plot(self.solution)
         plt.show()
 
         # print("#", i, "")
 
         print("best risk: ", min(self.solution))
+
+    def print_(self, i):
+        for j in i.individual:
+            print(j.id, j.isolated, end='   ')
+        print(i.fitness)
 
     def create_individual(self):
         individual = []
@@ -133,21 +142,36 @@ class GA:
             individual.append(t.Gene(self.persons_id[i], random.choice([True, False])))
         return individual
 
+    def create_neighbor(self, individual):
+        neighbor = individual.copy()
+        n = len(self.persons_id) - 1
+        # while True:
+        offset = random.randint(0, n)
+        if neighbor[offset].isolated:
+            neighbor[offset].isolated = False
+            # break
+        return neighbor
+
     def create_population(self):
         # here we create the population
         population = []
         i = 0
+        individual = self.create_individual()
         while i < self.size:
             g = self.graph.copy()
-            individual = self.create_individual()
-            # for j in individual:
-            #     print(j.id, j.isolated, end='    ')
-            # print('\n')
             t.update_copy_graph_attr(g, individual)
             if t.check_budget(g, self.budget):
-                population.append(t.Individual(self.create_individual(), t.sum_risk_persons(g)))
-                i += 1
-        # print("--- %s seconds ---" % (time.time() - start_time))
+                chromosome = t.Individual(individual, t.sum_risk_persons(g))
+                if not population:
+                    population.append(chromosome)
+                    i += 1
+                else:
+                    if not self.check_if_in_population(population, chromosome):
+                        population.append(chromosome)
+                        i += 1
+                individual = self.create_individual()
+            else:
+                individual = self.create_neighbor(individual)
         return population
 
     def initialization(self):
@@ -173,25 +197,24 @@ class GA:
         g = self.update_graph_attr(child)
         if self.constraint(g):
             child.fitness = t.sum_risk_persons(g)
+            return True
         else:
-            g = self.reparation(child)
-            child.fitness = t.sum_risk_persons(g)
+            return False
+        # else:
+        #     g = self.reparation(child)
+        #     chilelse:
+        #     g = self.reparation(child)
+        #     child.fitness = t.sum_risk_persons(g)
 
     def reparation(self, chromosome):
         g = self.update_graph_attr(chromosome)
         while not self.constraint(g):
-            # self.mutate(chromosome)
             n = len(self.persons_id) - 1
-            while True:
-                offset = random.randint(0, n)
-                if chromosome.individual[offset].isolated:
-                    chromosome.individual[offset].isolated = False
-                    break
-            # while True:
-            #     offset = random.randint(0, n)
-            #     if not chromosome.individual[offset].isolated:
-            #         chromosome.individual[offset].isolated = True
-            #         break
+            offset = random.randint(0, n)
+            if chromosome.individual[offset].isolated:
+                chromosome.individual[offset].isolated = False
+            else:
+                chromosome.individual[offset].isolated = True
             g = self.update_graph_attr(chromosome)
         return g
 
@@ -224,11 +247,32 @@ class GA:
                 count += 1
         return count
 
+    def check_duplications(self, pop1, pop2):
+        check = True
+        for i in range(self.size):
+            for j in range(self.size):
+                if i == j:
+                    continue
+                if not self.check_if_same_parents(pop1[i], pop2[j]):
+                    check = False
+                else:
+                    return True
+        return check
+
+    def check_if_in_population(self, pop, chromosome):
+        check = False
+        for i in pop:
+            if self.check_if_same_parents(i, chromosome):
+                return True
+        return check
+
     def check_if_same_parents(self, parent_1, parent_2):
         check = False
         n = len(self.persons_id)
-        for i in range(0, n):
-            if parent_1.individual[i].isolated == parent_2.individual[i].isolated:
+        for i in range(n):
+            a = parent_1.individual[i].isolated
+            b = parent_2.individual[i].isolated
+            if a == b:
                 check = True
             else:
                 return False
@@ -272,7 +316,6 @@ class GA:
         and then selects the fittest individual. This option has the advantage that it does not require the individuals
         to be sorted by fitness first.
         """
-        # random.seed()
         if self.selection_strategy == "random":
             return self.random_selection(pop)
         elif self.selection_strategy == "roulette_wheel":

@@ -2,466 +2,376 @@
     "nodes": [
         {
             "type": "person",
-            "vulnerability": 0.5364326010049607,
-            "risk": 6.930891997989577,
+            "vulnerability": 0.5193592738172013,
+            "risk": 6.682700412152927,
             "id": 0,
             "status": "S",
-            "p_infection": 0.10382337570544646
+            "p_infection": 0.21859595811349666
         },
         {
             "type": "person",
-            "vulnerability": 0.5846309161640599,
-            "risk": 9.845170242873422,
+            "vulnerability": 0.7933516693754327,
+            "risk": 2.003356995495209,
             "id": 1,
             "status": "S",
-            "p_infection": 0.1837357394348177
+            "p_infection": 0.04219696921508358
         },
         {
             "type": "person",
-            "vulnerability": 0.512332120089752,
-            "risk": 7.4685519649201995,
+            "vulnerability": 0.6691941703667045,
+            "risk": 4.977230995163445,
             "id": 2,
             "status": "S",
-            "p_infection": 0.06888150938310718
+            "p_infection": 0.286142441942858
         },
         {
             "type": "person",
-            "vulnerability": 0.25949013304472446,
-            "risk": 8.687269701306946,
+            "vulnerability": 0.6220233081007656,
+            "risk": 5.204815854702581,
             "id": 3,
             "status": "S",
-            "p_infection": 0.25830265825599746
+            "p_infection": 0.15097450776143517
         },
         {
             "type": "person",
-            "vulnerability": 0.1749107240235081,
-            "risk": 3.7951467870717233,
-            "id": 6,
+            "vulnerability": 0.22821458627869723,
+            "risk": 7.561214286432141,
+            "id": 4,
             "status": "S",
-            "p_infection": 0.004367992477443694
+            "p_infection": 0.08518524083122923
         },
         {
             "type": "person",
-            "vulnerability": 0.7800280977269783,
-            "risk": 8.361613787109125,
+            "vulnerability": 0.8661105523298103,
+            "risk": 4.616619222096073,
+            "id": 5,
+            "status": "S",
+            "p_infection": 0.27461200879659353
+        },
+        {
+            "type": "person",
+            "vulnerability": 0.19782625401764112,
+            "risk": 2.711919670050161,
             "id": 7,
             "status": "S",
-            "p_infection": 0.03284658818830781
+            "p_infection": 0.29290531878131576
         },
         {
             "type": "person",
-            "vulnerability": 0.6623218757372287,
-            "risk": 9.643253507271554,
+            "vulnerability": 0.7242858042281473,
+            "risk": 6.3710475176884405,
             "id": 8,
             "status": "S",
-            "p_infection": 0.020854613559254196
+            "p_infection": 0.07313962284659832
         },
         {
             "type": "person",
-            "vulnerability": 0.24366297222446276,
-            "risk": 8.215856241374983,
-            "id": 9,
+            "vulnerability": 0.5578181465501638,
+            "risk": 5.775406287422031,
+            "id": 10,
             "status": "S",
-            "p_infection": 0.05044348386672848
+            "p_infection": 0.0011102808093105486
         },
         {
             "type": "person",
-            "vulnerability": 0.38980158974859336,
-            "risk": 4.069296638704444,
+            "vulnerability": 0.911289336616348,
+            "risk": 4.127380736803795,
             "id": 11,
             "status": "S",
-            "p_infection": 0.007090373289596118
+            "p_infection": 0.07549664663402714
         },
         {
             "type": "person",
-            "vulnerability": 0.44790139428532294,
-            "risk": 9.691846677781172,
-            "id": 12,
-            "status": "S",
-            "p_infection": 0.056411791425393876
-        },
-        {
-            "type": "person",
-            "vulnerability": 0.2881818932965931,
-            "risk": 9.961658007175977,
+            "vulnerability": 0.15916825499561726,
+            "risk": 6.807227707674163,
             "id": 14,
             "status": "S",
-            "p_infection": 0.24511190051336607
+            "p_infection": 0.11426948295120319
         },
         {
             "type": "facility",
-            "min_person": 8,
-            "RNB": 0.13000083226293008,
-            "income": 0.7188011912664956,
-            "f_risk": 0.6456015992702865,
+            "min_person": 3,
+            "RNB": 0.05294926573940294,
+            "income": 0.959646060238216,
+            "f_risk": 0.5595831091369514,
             "id": 15,
-            "workers": 13
+            "workers": 6
         },
         {
             "type": "facility",
-            "min_person": 9,
-            "RNB": 0.08575485256618891,
-            "income": 0.8066940722764292,
-            "f_risk": 2.2768391030845865,
+            "min_person": 3,
+            "RNB": 0.12850375096057157,
+            "income": 0.8026603416229074,
+            "f_risk": 2.149975813563654,
             "id": 16,
-            "workers": 13
+            "workers": 7
         },
         {
             "type": "facility",
-            "min_person": 9,
-            "RNB": 0.07922499812132347,
-            "income": 0.7140165944835886,
-            "f_risk": 1.4086721656561345,
+            "min_person": 3,
+            "RNB": 0.023131775513078434,
+            "income": 0.703879414513147,
+            "f_risk": 1.7857469915372621,
             "id": 17,
-            "workers": 12
+            "workers": 8
         },
         {
             "type": "facility",
-            "min_person": 8,
-            "RNB": 0.2186933520080311,
-            "income": 0.860186184352448,
-            "f_risk": 1.3150796792471262,
+            "min_person": 3,
+            "RNB": 0.5893229823141607,
+            "income": 0.7003100384641585,
+            "f_risk": 0.6934440357679583,
+            "id": 18,
+            "workers": 3
+        },
+        {
+            "type": "facility",
+            "min_person": 3,
+            "RNB": 0.20609222547278647,
+            "income": 0.7704892197774301,
+            "f_risk": 1.9009390788423433,
             "id": 19,
-            "workers": 13
-        },
-        {
-            "type": "facility",
-            "min_person": 8,
-            "RNB": 0.09997887447515097,
-            "income": 0.7471327149822329,
-            "f_risk": 1.0012351075595158,
-            "id": 21,
-            "workers": 14
+            "workers": 9
         }
     ],
     "links": [
         {
-            "distance": 0.7328936991237004,
+            "distance": 0.787511999446044,
             "source": 0,
-            "target": 14
+            "target": 4
         },
         {
-            "rate_of_participation": 0.1035570037609613,
-            "time_in": 0.75,
+            "distance": 0.6980771192529943,
+            "source": 0,
+            "target": 10
+        },
+        {
+            "rate_of_participation": 0.2659861155298226,
+            "time_in": 0.4166666666666667,
             "source": 0,
             "target": 15
         },
         {
-            "rate_of_participation": 0.2465159935055571,
-            "time_in": 0.5,
+            "rate_of_participation": 0.12916166184358865,
+            "time_in": 0.6666666666666666,
             "source": 0,
             "target": 16
         },
         {
-            "rate_of_participation": 0.02168575135030013,
-            "time_in": 0.5833333333333334,
+            "rate_of_participation": 0.004267564850382196,
+            "time_in": 0.4166666666666667,
             "source": 0,
             "target": 17
         },
         {
-            "rate_of_participation": 0.2749191148832375,
-            "time_in": 0.8333333333333334,
+            "rate_of_participation": 0.09765342855459297,
+            "time_in": 0.75,
             "source": 0,
             "target": 19
         },
         {
-            "rate_of_participation": 0.060012426733854096,
-            "time_in": 0.3333333333333333,
-            "source": 0,
-            "target": 21
+            "distance": 0.8096561762884944,
+            "source": 1,
+            "target": 10
         },
         {
-            "distance": 0.7193753464594024,
+            "rate_of_participation": 0.06836460838354003,
+            "time_in": 0.5,
             "source": 1,
+            "target": 17
+        },
+        {
+            "rate_of_participation": 0.018771591505244305,
+            "time_in": 0.5833333333333334,
+            "source": 2,
+            "target": 16
+        },
+        {
+            "rate_of_participation": 0.06130231766651776,
+            "time_in": 0.4166666666666667,
+            "source": 2,
+            "target": 19
+        },
+        {
+            "distance": 0.43572291172392574,
+            "source": 3,
             "target": 8
         },
         {
-            "distance": 0.6942670055131002,
-            "source": 1,
+            "distance": 0.5746919610300548,
+            "source": 3,
+            "target": 10
+        },
+        {
+            "distance": 0.7142891580841334,
+            "source": 3,
             "target": 14
         },
         {
-            "rate_of_participation": 0.1818128213709423,
-            "time_in": 0.3333333333333333,
-            "source": 1,
+            "rate_of_participation": 0.25664275442470774,
+            "time_in": 0.25,
+            "source": 3,
             "target": 15
         },
         {
-            "rate_of_participation": 0.07170760116520425,
-            "time_in": 0.5833333333333334,
-            "source": 1,
-            "target": 16
-        },
-        {
-            "rate_of_participation": 0.25603199583821046,
-            "time_in": 0.08333333333333333,
-            "source": 1,
-            "target": 17
-        },
-        {
-            "rate_of_participation": 0.20802381399651673,
-            "time_in": 0.5833333333333334,
-            "source": 1,
-            "target": 19
-        },
-        {
-            "rate_of_participation": 0.2512075186868919,
+            "rate_of_participation": 0.24288140135236705,
             "time_in": 0.75,
-            "source": 1,
-            "target": 21
-        },
-        {
-            "distance": 0.5674670553999592,
-            "source": 2,
-            "target": 11
-        },
-        {
-            "rate_of_participation": 0.03213652342329166,
-            "time_in": 0.3333333333333333,
-            "source": 2,
-            "target": 15
-        },
-        {
-            "rate_of_participation": 0.05142813475447347,
-            "time_in": 0.3333333333333333,
-            "source": 2,
-            "target": 16
-        },
-        {
-            "rate_of_participation": 0.19893861799594503,
-            "time_in": 0.25,
-            "source": 2,
-            "target": 17
-        },
-        {
-            "rate_of_participation": 0.03622924999849196,
-            "time_in": 0.16666666666666666,
-            "source": 2,
-            "target": 19
-        },
-        {
-            "distance": 0.9768147919269893,
-            "source": 3,
-            "target": 7
-        },
-        {
-            "rate_of_participation": 0.0055223788168091105,
-            "time_in": 0.5,
-            "source": 3,
-            "target": 15
-        },
-        {
-            "rate_of_participation": 0.05686673251844224,
-            "time_in": 0.4166666666666667,
-            "source": 3,
-            "target": 16
-        },
-        {
-            "rate_of_participation": 0.002425227193647479,
-            "time_in": 0.4166666666666667,
             "source": 3,
             "target": 17
         },
         {
-            "rate_of_participation": 0.063102824665035,
-            "time_in": 0.3333333333333333,
-            "source": 3,
-            "target": 19
-        },
-        {
-            "rate_of_participation": 0.04707120253444744,
-            "time_in": 0.5,
-            "source": 3,
-            "target": 21
-        },
-        {
-            "rate_of_participation": 0.15626798571877093,
-            "time_in": 0.8333333333333334,
-            "source": 6,
-            "target": 15
-        },
-        {
-            "rate_of_participation": 0.08478344943857245,
-            "time_in": 0.25,
-            "source": 6,
-            "target": 19
-        },
-        {
-            "rate_of_participation": 0.006649457072056746,
-            "time_in": 0.16666666666666666,
-            "source": 6,
-            "target": 21
-        },
-        {
-            "distance": 0.4251531093653846,
-            "source": 7,
-            "target": 8
-        },
-        {
-            "rate_of_participation": 0.050542002154561075,
-            "time_in": 0.25,
-            "source": 7,
-            "target": 15
-        },
-        {
-            "rate_of_participation": 0.03255538163400234,
-            "time_in": 0.16666666666666666,
-            "source": 7,
-            "target": 16
-        },
-        {
-            "rate_of_participation": 0.10237440635139314,
-            "time_in": 0.25,
-            "source": 7,
-            "target": 19
-        },
-        {
-            "rate_of_participation": 0.025973125838941562,
+            "rate_of_participation": 0.1017302027148122,
             "time_in": 0.6666666666666666,
-            "source": 7,
-            "target": 21
+            "source": 3,
+            "target": 18
         },
         {
-            "rate_of_participation": 0.014098818611113981,
-            "time_in": 0.08333333333333333,
-            "source": 8,
-            "target": 15
-        },
-        {
-            "rate_of_participation": 0.013846115344272821,
-            "time_in": 0.5,
-            "source": 8,
-            "target": 16
-        },
-        {
-            "rate_of_participation": 0.0818431345597153,
-            "time_in": 0.16666666666666666,
-            "source": 8,
-            "target": 17
-        },
-        {
-            "rate_of_participation": 0.01382106485786963,
-            "time_in": 0.4166666666666667,
-            "source": 8,
+            "rate_of_participation": 0.07455705325273514,
+            "time_in": 0.3333333333333333,
+            "source": 3,
             "target": 19
         },
         {
-            "rate_of_participation": 0.09900750722871678,
-            "time_in": 0.16666666666666666,
-            "source": 8,
-            "target": 21
-        },
-        {
-            "distance": 0.5970536646486538,
-            "source": 9,
-            "target": 11
-        },
-        {
-            "rate_of_participation": 0.017985365649623584,
-            "time_in": 0.3333333333333333,
-            "source": 9,
+            "rate_of_participation": 0.02848554352740763,
+            "time_in": 0.9166666666666666,
+            "source": 4,
             "target": 15
         },
         {
-            "rate_of_participation": 0.13571337692251556,
-            "time_in": 0.5833333333333334,
-            "source": 9,
-            "target": 16
-        },
-        {
-            "rate_of_participation": 0.07811295313923183,
+            "rate_of_participation": 0.3117371627969748,
             "time_in": 0.75,
-            "source": 9,
+            "source": 4,
+            "target": 16
+        },
+        {
+            "rate_of_participation": 0.040619517818788205,
+            "time_in": 0.75,
+            "source": 4,
             "target": 17
         },
         {
-            "rate_of_participation": 0.007298761351930701,
-            "time_in": 0.8333333333333334,
-            "source": 9,
-            "target": 21
+            "rate_of_participation": 0.2664077523770867,
+            "time_in": 0.4166666666666667,
+            "source": 4,
+            "target": 18
         },
         {
-            "rate_of_participation": 0.0013808376773190097,
-            "time_in": 0.25,
-            "source": 11,
-            "target": 15
+            "rate_of_participation": 0.15127352740144667,
+            "time_in": 0.5,
+            "source": 4,
+            "target": 19
         },
         {
-            "rate_of_participation": 0.02087537883505956,
+            "rate_of_participation": 0.027670055991196513,
+            "time_in": 0.08333333333333333,
+            "source": 5,
+            "target": 16
+        },
+        {
+            "rate_of_participation": 0.10092527805216485,
             "time_in": 0.6666666666666666,
-            "source": 11,
-            "target": 17
+            "source": 5,
+            "target": 19
         },
         {
-            "rate_of_participation": 0.032466385522056045,
-            "time_in": 0.16666666666666666,
-            "source": 11,
-            "target": 21
-        },
-        {
-            "distance": 0.6494004682077796,
-            "source": 12,
+            "distance": 0.6448287739789419,
+            "source": 7,
             "target": 14
         },
         {
-            "rate_of_participation": 0.01626327302388268,
-            "time_in": 0.8333333333333334,
-            "source": 12,
-            "target": 15
-        },
-        {
-            "rate_of_participation": 0.06471696817853263,
-            "time_in": 0.8333333333333334,
-            "source": 12,
-            "target": 16
-        },
-        {
-            "rate_of_participation": 0.02747295829346561,
+            "rate_of_participation": 0.12470757484676992,
             "time_in": 0.5,
-            "source": 12,
+            "source": 7,
+            "target": 15
+        },
+        {
+            "rate_of_participation": 0.008911243964828697,
+            "time_in": 0.16666666666666666,
+            "source": 7,
             "target": 17
         },
         {
-            "rate_of_participation": 0.059113518505917936,
-            "time_in": 0.8333333333333334,
-            "source": 12,
+            "rate_of_participation": 0.09115427996145223,
+            "time_in": 0.9166666666666666,
+            "source": 8,
+            "target": 16
+        },
+        {
+            "rate_of_participation": 0.06920205487439582,
+            "time_in": 0.5,
+            "source": 8,
+            "target": 17
+        },
+        {
+            "rate_of_participation": 0.037661041491530704,
+            "time_in": 0.5,
+            "source": 8,
             "target": 19
         },
         {
-            "rate_of_participation": 0.2135519797443068,
-            "time_in": 0.8333333333333334,
-            "source": 12,
-            "target": 21
+            "distance": 0.8729303034355256,
+            "source": 10,
+            "target": 11
         },
         {
-            "rate_of_participation": 0.13923418105922006,
+            "rate_of_participation": 0.27310711626797096,
+            "time_in": 0.5,
+            "source": 10,
+            "target": 15
+        },
+        {
+            "rate_of_participation": 0.09907253601057084,
+            "time_in": 0.6666666666666666,
+            "source": 10,
+            "target": 17
+        },
+        {
+            "rate_of_participation": 0.3321720833722596,
+            "time_in": 0.25,
+            "source": 10,
+            "target": 18
+        },
+        {
+            "rate_of_participation": 0.09153525319524303,
             "time_in": 0.08333333333333333,
+            "source": 10,
+            "target": 19
+        },
+        {
+            "rate_of_participation": 0.13570248853410566,
+            "time_in": 0.25,
+            "source": 11,
+            "target": 16
+        },
+        {
+            "rate_of_participation": 0.016279984599404107,
+            "time_in": 0.3333333333333333,
+            "source": 11,
+            "target": 19
+        },
+        {
+            "rate_of_participation": 0.010716955641537112,
+            "time_in": 0.6666666666666666,
             "source": 14,
             "target": 15
         },
         {
-            "rate_of_participation": 0.13334376825342875,
-            "time_in": 0.4166666666666667,
+            "rate_of_participation": 0.08846310099034539,
+            "time_in": 0.9166666666666666,
             "source": 14,
             "target": 16
         },
         {
-            "rate_of_participation": 0.026630577278013202,
-            "time_in": 0.75,
+            "rate_of_participation": 0.17056048725827416,
+            "time_in": 0.6666666666666666,
             "source": 14,
             "target": 17
         },
         {
-            "rate_of_participation": 0.017818741655413656,
-            "time_in": 0.5833333333333334,
-            "source": 14,
-            "target": 19
-        },
-        {
-            "rate_of_participation": 0.003894350269030829,
+            "rate_of_participation": 0.1393013355637948,
             "time_in": 0.4166666666666667,
             "source": 14,
-            "target": 21
+            "target": 19
         }
     ]
 }
