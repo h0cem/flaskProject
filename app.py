@@ -33,14 +33,14 @@ def create_random_d3_graph_dict():
 
     t.set_graph_attributes(g)
     # simulated annealing
-    initial_temp = 1.5
+    initial_temp = 1
     final_temp = 0
-    alpha = 0.001
+    alpha = 0.01
 
     # genetic algo
     size = 20
 
-    generation = 200
+    generation = 20
     p_mutation = 0.1
     p_crossover = 0.7
 
