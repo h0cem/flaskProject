@@ -1,9 +1,12 @@
 import random
 from flask import Flask, render_template, jsonify
+
+import exact
 import graph as G
 import graph_to_d3 as d3
 import simulated_annealing as sa
 import genetic_algo as ga
+import tools as t
 
 app = Flask(__name__)
 
@@ -18,24 +21,28 @@ def create_random_d3_graph_dict():
     max_person = 20
     # S: 70%,    I: 30%  ==> 30% population is infected
     p_susceptible = 0.7
-    n = 100
-    f = 30
+    n = 15
+    f = 5
     p = 0.2
     budget = 0.5
 
     # create graph
     g = G.Graph(n, f, p, min_person, max_person, p_susceptible).create_graph()
+
+    exact.CPLEX(graph=g, budget=budget, n=n, f=f).build_covid_model()
+
+    t.set_graph_attributes(g)
     # simulated annealing
-    initial_temp = 1
+    initial_temp = 1.5
     final_temp = 0
-    alpha = 0.0005
+    alpha = 0.001
 
     # genetic algo
-    size = 25
+    size = 20
 
     generation = 200
     p_mutation = 0.1
-    p_crossover = 0.85
+    p_crossover = 0.7
 
     elite = 0
 
@@ -65,7 +72,7 @@ def create_random_d3_graph_dict():
     graph2.ga()
     print("AG.. roulette wheel selection    ", end='   ')
     graph3.ga()
-    print("AG.. tournament selection")  # ", end='   ')
+    print("AG.. tournament selection        ", end='   ')
     graph4.ga()
 
     graph_dict = d3.graph_to_dict(g)

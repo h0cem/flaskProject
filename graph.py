@@ -25,7 +25,7 @@ class Graph:
         self.init_person()
         self.init_facility()
 
-        t.set_graph_attributes(self.g)
+        # t.set_graph_attributes(self.g)
         return self.g
 
     def init_person(self):

@@ -61,13 +61,13 @@ class SimulatedAnnealing:
         current_temp = self.initial_temp
         final_step = int(current_temp / self.alpha)
         step = 0
-        # plt.figure()
-        # plt.title("risk")
+        # simulated annealing loop
         while current_temp > self.final_temp:
             g = self.graph.copy()
 
             # get neighbor
-            neighbor = self.create_neighbor(individual)
+            # neighbor = self.create_neighbor(individual)
+            neighbor = self.create_individual()
 
             # update the new graph
             t.update_copy_graph_attr(g, neighbor)
@@ -105,13 +105,10 @@ class SimulatedAnnealing:
                         boolean = True
                         rand = True
                         step += 1
-                # step += 1
-
-                # self.print_solution(g, final_step, step, current_temp, sum_risk, rand)
 
                 # decrement the temperature
                 current_temp -= self.alpha
-                # plt.scatter(step, self.best_risk)
+
             # else:
             #     self.print_error(self, final_step, step, current_temp)
 

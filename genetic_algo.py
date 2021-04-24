@@ -66,7 +66,7 @@ class GA:
                 parent_1 = []
                 parent_2 = []
                 # SELECTION :: check if parent_1 != parent_2
-                while True and datetime.now() - start < timedelta(seconds=5):
+                while True and datetime.now() - start < timedelta(seconds=8):
                     parent_1 = self.selection(old_pop)
                     parent_2 = self.selection(old_pop)
                     if not self.check_if_same_parents(parent_1, parent_2):
@@ -120,6 +120,7 @@ class GA:
 
         plt.figure()
         plt.title("risk")
+        # plt.plot(self.solution)
         plt.plot(sorted(self.solution, reverse=True))
         plt.show()
 
@@ -198,9 +199,6 @@ class GA:
             return True
         else:
             return False
-        # else:
-        #     g = self.reparation(child)
-        #     chilelse:
         #     g = self.reparation(child)
         #     child.fitness = t.sum_risk_persons(g)
 
