@@ -21,17 +21,16 @@ def create_random_d3_graph_dict():
     max_person = 20
     # S: 70%,    I: 30%  ==> 30% population is infected
     p_susceptible = 0.7
-    n = 15
+    n = 25
     f = 5
     p = 0.2
-    budget = 0.5
+    budget = 0.6
 
     # create graph
     g = G.Graph(n, f, p, min_person, max_person, p_susceptible).create_graph()
 
     exact.CPLEX(graph=g, budget=budget, n=n, f=f).build_covid_model()
 
-    t.set_graph_attributes(g)
     # simulated annealing
     initial_temp = 1
     final_temp = 0
@@ -40,9 +39,9 @@ def create_random_d3_graph_dict():
     # genetic algo
     size = 20
 
-    generation = 20
+    generation = 25
     p_mutation = 0.1
-    p_crossover = 0.7
+    p_crossover = 0.8
 
     elite = 0
 
@@ -56,24 +55,12 @@ def create_random_d3_graph_dict():
                    selection_strategy=selection_strategy[0], crossover_strategy=crossover_strategy[1],
                    p_mutation=p_mutation, p_crossover=p_crossover, k=tournament_k)
 
-    graph3 = ga.GA(graph=g, generation=generation, size=size, elite=elite, budget=budget,
-                   selection_strategy=selection_strategy[1], crossover_strategy=crossover_strategy[1],
-                   p_mutation=p_mutation, p_crossover=p_crossover, k=tournament_k)
-
-    graph4 = ga.GA(graph=g, generation=generation, size=size, elite=elite, budget=budget,
-                   selection_strategy=selection_strategy[2], crossover_strategy=crossover_strategy[1],
-                   p_mutation=p_mutation, p_crossover=p_crossover, k=tournament_k)
-
-    # while 1:
     print("############################################")
     print("Simulated Annealing              ", end='   ')
     graph.simulated_annealing()
-    print("AG.. random selection            ", end='   ')
-    graph2.ga()
-    print("AG.. roulette wheel selection    ", end='   ')
-    graph3.ga()
-    print("AG.. tournament selection        ", end='   ')
-    graph4.ga()
+    print("AG..                             ", end='   ')
+    graph2.ga2()
+
 
     graph_dict = d3.graph_to_dict(g)
     d3_graph = d3.d3_format(graph_dict)

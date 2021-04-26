@@ -198,6 +198,7 @@ function update(dataLinks, dataNodes) {
                 })
                 .type((d) => {
                     if (d.type === "person") {
+                        console.log(d)
                         return d3.symbolCircle;
                     } else {
                         return d3.symbolSquare;

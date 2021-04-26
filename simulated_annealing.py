@@ -11,7 +11,6 @@ class SimulatedAnnealing:
     temperatures = []
 
     def __init__(self, graph, budget, initial_temp, final_temp, alpha):
-        random.seed(1)
         self.graph = graph
         self.persons_id = t.get_persons_id(self.graph)
         self.budget = budget
@@ -19,40 +18,10 @@ class SimulatedAnnealing:
         self.final_temp = final_temp
         self.alpha = alpha
 
-    def constraint(self, g):
-        return t.check_budget(g, self.budget)
-
-    def update_graph_attr(self, individual):
-        g = self.graph.copy()
-        t.update_copy_graph_attr(g, individual)
-        return g
-
-    def random_individual(self):
-        individual = []
-        for i in range(len(self.persons_id)):
-            individual.append(t.Gene(self.persons_id[i], random.choice([True, False])))
-        return individual
-
-    def create_individual(self):
-        individual = self.random_individual()
-
-        g = self.update_graph_attr(individual)
-        while not self.constraint(g):
-            individual = self.random_individual()
-            g = self.update_graph_attr(individual)
-        return individual
-
-    def create_neighbor(self, individual):
-        neighbor = individual.copy()
-        n = len(self.persons_id) - 1
-        offset = random.randint(0, n)
-        if neighbor[offset].isolated:
-            neighbor[offset].isolated = False
-        else:
-            neighbor[offset].isolated = True
-        return neighbor
-
     def simulated_annealing(self):
+        # init random
+        random.seed(1)
+
         solutions = []
         steps = []
         rand = False
@@ -61,19 +30,20 @@ class SimulatedAnnealing:
         current_temp = self.initial_temp
         final_step = int(current_temp / self.alpha)
         step = 0
+
         # simulated annealing loop
         while current_temp > self.final_temp:
             g = self.graph.copy()
 
             # get neighbor
-            # neighbor = self.create_neighbor(individual)
-            neighbor = self.create_individual()
+            neighbor = self.create_neighbor(individual)
+            # neighbor = self.create_individual()
 
             # update the new graph
             t.update_copy_graph_attr(g, neighbor)
 
             # calculate fitness
-            if t.check_budget(g, self.budget):
+            if self.constraint(g):
 
                 sum_risk = t.sum_risk_persons(g)
 
@@ -113,16 +83,57 @@ class SimulatedAnnealing:
             #     self.print_error(self, final_step, step, current_temp)
 
         if boolean:
-            print("best risk: ", self.best_risk)
-            plt.figure()
-            plt.title("risk")
-            plt.plot(steps, solutions)
-            plt.axis([max(steps), min(steps), min(solutions), max(solutions)])
-            plt.show()
-            # print("solution: \n", solution)
+            self.display(steps=steps, solutions=solutions, individual=individual, g=g)
         else:
             print('No solution')
         return individual
+
+    def display(self, steps, solutions, individual, g):
+        print("best risk: ", self.best_risk)
+        # plot
+        plt.figure()
+        plt.title("risk")
+        plt.plot(steps, solutions)
+        plt.axis([max(steps), min(steps), min(solutions), max(solutions)])
+        plt.show()
+
+        for i in individual:
+            if not i.isolated:
+                print(i.id, end='  ')
+        print(t.total_RNB(g))
+
+    def constraint(self, g):
+        return t.check_budget(g, self.budget)
+
+    def update_graph_attr(self, individual):
+        g = self.graph.copy()
+        t.update_copy_graph_attr(g, individual)
+        return g
+
+    def random_individual(self):
+        individual = []
+        for i in range(len(self.persons_id)):
+            individual.append(t.Gene(self.persons_id[i], random.choice([True, False])))
+        return individual
+
+    def create_individual(self):
+        individual = self.random_individual()
+
+        g = self.update_graph_attr(individual)
+        while not self.constraint(g):
+            individual = self.random_individual()
+            g = self.update_graph_attr(individual)
+        return individual
+
+    def create_neighbor(self, individual):
+        neighbor = individual.copy()
+        n = len(self.persons_id) - 1
+        offset = random.randint(0, n)
+        if neighbor[offset].isolated:
+            neighbor[offset].isolated = False
+        else:
+            neighbor[offset].isolated = True
+        return neighbor
 
     def print_solution(self, g, final_step, step, current_temp, sum_risk, rand):
         print("Step # ",

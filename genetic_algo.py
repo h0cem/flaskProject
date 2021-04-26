@@ -15,9 +15,6 @@ class GA:
     population: population that have (size) m individuals
     """
 
-    solution = []
-    gen = []
-
     def __init__(self, graph, generation, size, budget, elite, selection_strategy, crossover_strategy, p_mutation,
                  p_crossover, k):
         self.graph = graph
@@ -45,21 +42,21 @@ class GA:
     def ga(self):
         generation = 0
 
-        self.gen = []
-        self.solution = []
+        gen = []
+        solution = []
 
         start_time = datetime.now()
 
         old_pop = self.population
-        self.solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
-        self.gen.append(generation)
+        solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
+        gen.append(generation)
 
         random.seed()
-        while generation < self.generation and datetime.now() - start_time < timedelta(seconds=50):
+        while generation < self.generation and datetime.now() - start_time < timedelta(seconds=150):
             # create a new population
             new_pop = []
             # the new population must have the same size
-            while len(new_pop) < self.size and datetime.now() - start_time < timedelta(seconds=50):
+            while len(new_pop) < self.size and datetime.now() - start_time < timedelta(seconds=150):
 
                 start = datetime.now()
 
@@ -67,7 +64,7 @@ class GA:
                 parent_2 = []
                 # SELECTION :: check if parent_1 != parent_2
                 while True and datetime.now() - start < timedelta(seconds=8):
-                    parent_1 = self.selection(old_pop)
+                    parent_1 = self.best_selection(old_pop)
                     parent_2 = self.selection(old_pop)
                     if not self.check_if_same_parents(parent_1, parent_2):
                         break
@@ -115,16 +112,106 @@ class GA:
 
             old_pop = new_pop
             generation += 1
-            self.solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
-            self.gen.append(generation)
+            solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
+            gen.append(generation)
 
         plt.figure()
         plt.title("risk")
-        # plt.plot(self.solution)
-        plt.plot(sorted(self.solution, reverse=True))
+        plt.plot(sorted(solution, reverse=True))
         plt.show()
 
-        print("best risk: ", min(self.solution))
+        print("best risk: ", min(solution))
+
+    def ga2(self):
+        generation = 0
+
+        gen = []
+        solution = []
+        mean = []
+
+        old_pop = self.population.copy()
+
+        solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
+        gen.append(generation)
+
+        random.seed()
+        while generation < self.generation:  # and datetime.now() - start_time < timedelta(seconds=150):
+            # create a new population
+            new_pop = []
+
+            parent_1, parent_1_index = self.best_selection(old_pop)
+            new_pop.append(parent_1)
+
+            # the new population must have the same size
+            # while len(new_pop) < self.size:  # and datetime.now() - start_time < timedelta(seconds=150):
+            for parent_2_index in range(len(old_pop)):
+                if parent_2_index == parent_1_index:
+                    continue
+                else:
+                    parent_2 = old_pop[parent_2_index]
+                    # CrossOver if random < p_crossover
+                    if random.random() < self.P_CROSSOVER:
+                        child_1, child_2 = self.crossover(parent_1, parent_2)
+
+                        # Mutation
+                        self.mutation(child_1)
+                        # Add child
+                        self.append_individual(new_pop, child_1)
+                        # check size of population then add child
+                        if len(new_pop) < self.size:
+                            # Mutation
+                            self.mutation(child_2)
+                            self.append_individual(new_pop, child_2)
+                        else:
+                            break
+
+                    # if no crossover happens, we will chose the best of parents and add it to the population
+                    else:
+                        if len(new_pop) < self.size:
+                            self.append_parent(new_pop, parent_1, parent_2)
+                        else:
+                            break
+
+            old_pop = new_pop
+            generation += 1
+            a = 0
+            for s in old_pop:
+                a += s.fitness
+            solution.append(min(old_pop, key=lambda x: x.fitness).fitness)
+            mean.append(a / len(old_pop))
+            gen.append(generation)
+
+        self.display(solution)
+        self.display(mean)
+
+        for i in min(old_pop, key=lambda x: x.fitness).individual:
+            if not i.isolated:
+                print(i.id, end='  ')
+
+        g = self.update_graph_attr(min(old_pop, key=lambda x: x.fitness))
+        print(1 - t.total_RNB(g))
+        print()
+
+    def append_individual(self, pop, individual):
+        if self.fitness(individual):
+            pop.append(individual)
+
+    def append_parent(self, pop, parent_1, parent_2):
+        if parent_1.fitness < parent_2.fitness:
+            # Mutation
+            self.mutation(parent_1)
+            self.append_individual(pop, parent_1)
+        else:
+            self.mutation(parent_2)
+            self.append_individual(pop, parent_2)
+
+    def display(self, solution):
+        plt.figure()
+        plt.title("risk")
+        plt.plot(solution)
+        plt.show()
+
+        print("best risk: ", min(solution))
 
     def print_chromosome(self, i):
         for j in i.individual:
@@ -199,8 +286,6 @@ class GA:
             return True
         else:
             return False
-        #     g = self.reparation(child)
-        #     child.fitness = t.sum_risk_persons(g)
 
     def reparation(self, chromosome):
         g = self.update_graph_attr(chromosome)
@@ -236,13 +321,6 @@ class GA:
             chromosome.individual[offset].isolated = False
         else:
             chromosome.individual[offset].isolated = True
-
-    def num_isolated(self, chromosome):
-        count = 0
-        for i in chromosome.individual:
-            if i.isolated:
-                count += 1
-        return count
 
     def check_duplications(self, pop1, pop2):
         check = True
@@ -368,7 +446,7 @@ class GA:
         return pop[selected]
 
     def best_selection(self, pop):
-        return min(pop, key=lambda x: x.fitness)
+        return min(pop, key=lambda x: x.fitness), pop.index(min(pop, key=lambda x: x.fitness))
 
     def crossover(self, parent_1, parent_2):
         """

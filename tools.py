@@ -41,6 +41,7 @@ def facility_degree(g):
         if g.nodes[facility]['type'] == 'facility':
             g.nodes[facility]['workers'] = g.degree(facility)
 
+
 def remove_infected_persons(g):
     for person in list(g.nodes):
         if is_infected_person(g, person):
@@ -180,7 +181,7 @@ def facility_min_person(g, facility):
 
 
 def check_budget(g, budget):
-    return total_RNB(g) > budget
+    return (1 - total_RNB(g)) <= budget
 
 
 def total_RNB(g: nx):
