@@ -1,7 +1,6 @@
 import random
 import networkx as nx
 import numpy as np
-import numpy.random
 import tools as t
 
 
@@ -46,7 +45,7 @@ class Graph:
             rand = random.uniform(0, 1)
             if rand > self.p_susceptible:
                 self.g.nodes[node]['status'] = 'I'
-                self.g.nodes[node]['p_infection'] = random.uniform(0.3, 1)
+                self.g.nodes[node]['p_infection'] = random.uniform(0.31, 1)
             else:
                 self.g.nodes[node]['status'] = 'S'
                 self.g.nodes[node]['p_infection'] = random.uniform(0, 0.3)

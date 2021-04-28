@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from docplex.mp.model import Model
 
 
@@ -14,6 +16,8 @@ class CPLEX:
         # Initialize the problem data
         # ----------------------------------------------------------------------------
 
+        start_time = datetime.now()
+
         persons = self.get_persons()
         facilities = self.get_facilities()
         edges = self.get_edges_person_facility()
@@ -29,7 +33,7 @@ class CPLEX:
         y = {j: mdl.binary_var(name='y[{0}]'.format(j)) for j in facilities}
 
         # binary variables for edges
-        xy = {(e[0], e[1]): mdl.binary_var(name='x[{0}, {1}]'.format(e[0], e[1])) for e in edges}
+        xy = {(e[0], e[1]): mdl.binary_var(name='x({0}, {1})'.format(e[0], e[1])) for e in edges}
 
         # ----------------------------------------------------------------------------
         # Constraint
@@ -48,7 +52,7 @@ class CPLEX:
                         ) <= self.budget
         )
 
-        M = 9999
+        M = 999
         # remove facility (min_persons)
         for j in facilities:
             facility_degree = mdl.sum(xy.get((i, j), 0) for i in persons)
@@ -74,12 +78,15 @@ class CPLEX:
         # total_risk
         mdl.minimize(mdl.sum(x.get(i) * persons.get(i)['risk'] for i in persons))
 
+        # ----------------------------------------------------------------------------
+        # Solve the model and display the result
+        # ----------------------------------------------------------------------------
         mdl.print_information()
 
         mdl_solution = mdl.solve()
         assert mdl_solution
         mdl_solution.display()
-        print(self.g.nodes.data())
+        print(datetime.now() - start_time)
 
     def get_persons(self):
         ids = []

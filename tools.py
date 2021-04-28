@@ -1,3 +1,5 @@
+import copy
+
 import networkx as nx
 
 
@@ -87,7 +89,8 @@ def f_risk(p_infection, time_in):
 def rnb_facilities(g):
     for facility in g.nodes:
         if g.nodes[facility]['type'] == 'facility':
-            rnb_facility(g, facility)
+            g.nodes[facility]['RNB'] = rnb_facility(g, facility)
+    return g
 
 
 def rnb_facility(g, facility):
@@ -98,6 +101,7 @@ def income_facilities(g):
     for facility in g.nodes:
         if g.nodes[facility]['type'] == 'facility':
             g.nodes[facility]['income'] = income_facility(g, facility)
+    return g
 
 
 def income_facility(g, facility):
@@ -164,15 +168,16 @@ def sum_dist_infection(g, person_1):
     return sum_distance_infection
 
 
-def remove_facilities_minP(g: nx):
+def remove_facilities_minP(g1: nx):
     """
     if N_person < N_person_min:: remove facility
     """
-    for facility in list(g.nodes):
-        if g.nodes[facility]['type'] == 'facility':
-            if facility_min_person(g, facility):
-                g.remove_node(facility)
+    for facility in list(g1.nodes):
+        if g1.nodes[facility]['type'] == 'facility':
+            if facility_min_person(g1, facility):
+                g1.remove_node(facility)
             # g.nodes[facility]['workers'] = g.degree(facility)
+    return g1
 
 
 def facility_min_person(g, facility):
@@ -196,13 +201,25 @@ def remove_isolated_persons(g, individual):
     for person in range(len(individual)):
         if individual[person].isolated:
             g.remove_node(individual[person].id)
-            # print("node_id: ", individual[person].id, " is deleted!", individual[person].isolated)
+    return g
 
 
 def update_copy_graph_attr(g, individual):
-    # print(g.nodes)
-    remove_isolated_persons(g, individual)
-    # print(g.nodes)
-    remove_facilities_minP(g)
-    income_facilities(g)
-    rnb_facilities(g)
+    # for facility in list(g.nodes):
+    #     if g.nodes[facility]['type'] == 'facility':
+    #         print(g.nodes,g.nodes[facility]['income'], g.nodes[facility]['RNB'], g.degree(facility), sep='   ')
+
+    g1 = copy.deepcopy(g)
+    g1 = remove_isolated_persons(g1, individual)
+    g1 = remove_facilities_minP(g1)
+    g1 = income_facilities(g1)
+    g1 = rnb_facilities(g1)
+
+    # print('G1 ---> ', g1.nodes,sum_risk_persons(g1), 1 - total_RNB(g1), sep='   ')
+    #
+    # for facility in list(g1.nodes):
+    #     if g1.nodes[facility]['type'] == 'facility':
+    #         print(g1.nodes[facility]['income'], g1.nodes[facility]['RNB'], g1.degree(facility), sep='   ')
+    # print()
+
+    return g1

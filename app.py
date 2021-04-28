@@ -17,12 +17,12 @@ def create_random_d3_graph_dict():
     representation of the graph formatted for visualization in d3
     """
     random.seed()
-    min_person = 3
+    min_person = 2
     max_person = 20
     # S: 70%,    I: 30%  ==> 30% population is infected
     p_susceptible = 0.7
-    n = 25
-    f = 5
+    n = 12
+    f = 4
     p = 0.2
     budget = 0.6
 
